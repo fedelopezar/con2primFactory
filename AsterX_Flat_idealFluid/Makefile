@@ -1,10 +1,10 @@
 
 
 CXX=g++
-INCDIR=..
+INC=-I.. -I.
 LDIR=.
 LIBS=#-lpthread -lm
-CXXFLAGS=-std=c++11 -I$(INCDIR) -L$(LDIR) $(LIBS)
+CXXFLAGS=-std=c++11 $(INC) -L$(LDIR) $(LIBS)
 
 DEPS = AsterX_Flat_idealFluid.hxx  ../con2primFactory.hxx 
 
@@ -17,4 +17,4 @@ AsterX_Flat_idealFluid: $(OBJ)
 	$(CXX) -o $@ $^ $(CXXFLAGS)
 
 clean:
-	rm *.o 
+	rm *.o  ../*o AsterX_Flat_idealFluid
