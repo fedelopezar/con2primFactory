@@ -27,21 +27,17 @@ enum class PrimitiveLabel
     P_B3
 };
 
-/* Abstract class con2primFactory as template */
+/* Abstract class con2primFactory */
 class con2primFactory
 {
 public:
-    // The constructor must initialize the following vectors:
+    /* The constructor must initialize the following vectors */
     std::vector<PrimitiveLabel> PrimitiveLabels;
     std::vector<double> ConservedVars;     // Conserved to solve
     std::vector<double> PrimitiveVarsSeed; // Primitive seeds
     std::vector<double> PrimitiveVars;     // Primitive solution
 
-    // For testing, might be useful to get Conserved and Seeds from Primitive solution
-    virtual void get_ConservedVars(std::vector<double> cons, std::vector<double> prim) = 0;
-    virtual void get_PrimitiveVars_Seed(std::vector<double> vec2) = 0;
-
-    // This must be set for 2DNRNoble scheme:
+    /* These must be set for 2DNRNoble scheme */
     int Failed_2DNRNoble;
     double W_Seed, vsq_Sol, Ssq, Press_Seed, Z_Seed, Z_Sol, vsq_Seed;
     virtual void get_LorentzFactor_Seed() = 0; // From seed prims and cons
