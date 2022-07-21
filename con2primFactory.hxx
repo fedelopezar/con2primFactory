@@ -8,6 +8,9 @@
 #define S2_COV 2
 #define S3_COV 3
 #define TAU 4
+#define B1 5
+#define B2 6
+#define B3 7
 
 /* Type Primitive to define your specific primitives */
 enum class PrimitiveLabel
@@ -39,13 +42,21 @@ public:
 
     /* These must be set for 2DNRNoble scheme */
     int Failed_2DNRNoble;
-    double W_Seed, vsq_Sol, Ssq, Press_Seed, Z_Seed, Z_Sol, vsq_Seed;
+    double W_Seed, vsq_Sol, Ssq, Press_Seed, Z_Seed, Z_Sol, vsq_Seed, bsq;
     virtual void get_LorentzFactor_Seed() = 0; // From seed prims and cons
     virtual void get_Ssq_Exact() = 0;          // From cons (exact)
     virtual void get_Press_Seed() = 0;         // From seed prims and cons
     virtual void get_Z_Seed() = 0;             // From seed prims and cons
+    virtual double get_2DNRNoble_f0(double Z, double Vsq) = 0;
+    virtual double get_2DNRNoble_f1(double Z, double Vsq) = 0;
+    virtual double get_2DNRNoble_df0dZ(double Z, double Vsq) = 0;
+    virtual double get_2DNRNoble_df0dVsq(double Z, double Vsq) = 0;
+    virtual double get_2DNRNoble_df1dZ(double Z, double Vsq) = 0;
+    virtual double get_2DNRNoble_df1dVsq(double Z, double Vsq) = 0;
+
     virtual double get_Press_funcZVsq(double Z, double Vsq) = 0;
     virtual double dPdZ_funcZVsq(double Z, double Vsq) = 0;
     virtual double dPdVsq_funcZVsq(double Z, double Vsq) = 0;
     virtual void WZ2Prim() = 0;
+    virtual ~con2primFactory() {};
 };

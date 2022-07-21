@@ -8,7 +8,7 @@ Sources: Noble+2006, Section 3.1 of Siegel+2018,
 NUMERICAL RECIPES IN C: THE ART OF SCIENTIFIC COMPUTING
 ****************************************************************************/
 void Con2Prim_2DNRNoble(int max_iter, con2primFactory &plasma)
-{ // Send con2primFactory as reference to modify it, and because we can not instantiate abstract class
+{ // Send con2primFactory object as reference to modify it, and because we can not instantiate abstract class
 
     /* get Lorentz factor seed */
     plasma.get_LorentzFactor_Seed();
@@ -38,12 +38,12 @@ void Con2Prim_2DNRNoble(int max_iter, con2primFactory &plasma)
 
     /* Start Recovery with 2D NR Solver */
     const int n = 2;
-    double tolf = 1E-15; // TODO: Make parameter
+    double tolf = 1E-10; // TODO: Make parameter
     double fvec[n];
     double dx[n];
     double fjac[n][n];
 
-    double rho, Press, dPdx0, dPdx1;
+    double Press, dPdx0, dPdx1;
     double detjac_inv;
     double errf;
 
@@ -51,15 +51,12 @@ void Con2Prim_2DNRNoble(int max_iter, con2primFactory &plasma)
     for (int k = 1; k <= max_iter; k++)
     {
         Press = plasma.get_Press_funcZVsq(x[0], x[1]);
-        rho = plasma.ConservedVars[D] * sqrt(1.0 - x[1]);
-        fvec[0] = x[1] * x[0] * x[0] - plasma.Ssq;
-        fvec[1] = plasma.ConservedVars[TAU] + plasma.ConservedVars[D] - x[0] + Press;
-        dPdx0 = plasma.dPdZ_funcZVsq(x[0], x[1]);
-        dPdx1 = plasma.dPdVsq_funcZVsq(x[0], x[1]);
-        fjac[0][0] = 2.0 * x[1] * x[0];
-        fjac[0][1] = x[0] * x[0];
-        fjac[1][0] = -1.0 + dPdx0;
-        fjac[1][1] = dPdx1;
+        fvec[0] = plasma.get_2DNRNoble_f0(x[0], x[1]);
+        fvec[1] = plasma.get_2DNRNoble_f1(x[0], x[1]);
+        fjac[0][0] = plasma.get_2DNRNoble_df0dZ(x[0], x[1]);
+        fjac[0][1] = plasma.get_2DNRNoble_df0dVsq(x[0], x[1]);
+        fjac[1][0] = plasma.get_2DNRNoble_df1dZ(x[0], x[1]);
+        fjac[1][1] = plasma.get_2DNRNoble_df1dVsq(x[0], x[1]);
         detjac_inv = 1.0 / (fjac[0][0] * fjac[1][1] - fjac[0][1] * fjac[1][0]);
         dx[0] = -detjac_inv * (fjac[1][1] * fvec[0] - fjac[0][1] * fvec[1]);
         dx[1] = -detjac_inv * (-fjac[1][0] * fvec[0] + fjac[0][0] * fvec[1]);
@@ -79,6 +76,8 @@ void Con2Prim_2DNRNoble(int max_iter, con2primFactory &plasma)
             x[i] += dx[i];
         }
     }
+    // Check p_m/p
+    //std::cout<< plasma.bsq/Press/2.0 <<std::endl;
 
     /* Calculate primitives from Z and W */
     plasma.Z_Sol = x[0];
