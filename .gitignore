@@ -1,4 +1,13 @@
 2DNRNoble.o
 AsterX_Flat_idealFluid/AsterX_Flat_idealFluid
 AsterX_Flat_idealFluid/AsterX_Flat_idealFluid.o
+AsterX_Flat_idealFluid/2DNRNoble.h5
 AsterX_Flat_idealFluid/main.o
+AsterX_Flat_idealFluid/.ipynb_checkpoints/
+AsterX_Flat_idealFluid/testResults.pdf
+AsterX_Flat_idealFluid_Magnetized/AsterX_Flat_idealFluid_Magnetized
+AsterX_Flat_idealFluid_Magnetized/AsterX_Flat_idealFluid_Magnetized.o
+AsterX_Flat_idealFluid_Magnetized/2DNRNoble.h5
+AsterX_Flat_idealFluid_Magnetized/main.o
+AsterX_Flat_idealFluid_Magnetized/.ipynb_checkpoints/
+AsterX_Flat_idealFluid_Magnetized/testResults.pdf
