@@ -1,62 +1,85 @@
-#include <iostream>
-#include <vector>
+#ifndef CON2PRIM_HXX
+#define CON2PRIM_HXX
+//#include "AMReX_GpuQualifiers.H"
+#define CCTK_DEVICE
+//#define CCTK_DEVICE AMREX_GPU_DEVICE
+#define CCTK_HOST
+//#define CCTK_HOST AMREX_GPU_HOST
+//#include "utils.hxx"
+#define CCTK_REAL double
+#define CCTK_INT int
+
 #include <math.h>
 
-/* Macros for indices of vector ConservedVars */
-#define D 0
-#define S1_COV 1
-#define S2_COV 2
-#define S3_COV 3
-#define TAU 4
-#define B1 5
-#define B2 6
-#define B3 7
-
-/* Type Primitive to define your specific primitives */
-enum class PrimitiveLabel
+namespace AsterX
 {
-    P_RHO,
-    P_UU,
-    P_EPS,
-    P_Temp,
-    P_V1Valencia,
-    P_V1coord,
-    P_V2Valencia,
-    P_V2coord,
-    P_V3Valencia,
-    P_V3coord,
-    P_B1,
-    P_B2,
-    P_B3
-};
 
-/* Abstract class con2primFactory */
-class con2primFactory
-{
-public:
-    /* The constructor must initialize the following vectors */
-    std::vector<PrimitiveLabel> PrimitiveLabels;
-    std::vector<double> ConservedVars;     // Conserved to solve
-    std::vector<double> PrimitiveVarsSeed; // Primitive seeds
-    std::vector<double> PrimitiveVars;     // Primitive solution
+    constexpr int NCONS = 8;
+    constexpr int NPRIMS = 5;
 
-    /* These must be set for 2DNRNoble scheme */
-    int Failed_2DNRNoble;
-    double W_Seed, vsq_Sol, Ssq, Press_Seed, Z_Seed, Z_Sol, vsq_Seed, bsq;
-    virtual void get_LorentzFactor_Seed() = 0; // From seed prims and cons
-    virtual void get_Ssq_Exact() = 0;          // From cons (exact)
-    virtual void get_Press_Seed() = 0;         // From seed prims and cons
-    virtual void get_Z_Seed() = 0;             // From seed prims and cons
-    virtual double get_2DNRNoble_f0(double Z, double Vsq) = 0;
-    virtual double get_2DNRNoble_f1(double Z, double Vsq) = 0;
-    virtual double get_2DNRNoble_df0dZ(double Z, double Vsq) = 0;
-    virtual double get_2DNRNoble_df0dVsq(double Z, double Vsq) = 0;
-    virtual double get_2DNRNoble_df1dZ(double Z, double Vsq) = 0;
-    virtual double get_2DNRNoble_df1dVsq(double Z, double Vsq) = 0;
+    /* Abstract class con2primFactory */
+    class con2primFactory
+    {
+    public:
+        /* The constructor must initialize the following vectors */
+        // std::vector<PrimitiveLabel> PrimitiveLabels;
+        CCTK_REAL ConservedVars[NCONS];      // Conserved to solve
+        CCTK_REAL PrimitiveVarsSeed[NPRIMS]; // Primitive seeds
+        CCTK_REAL PrimitiveVars[NPRIMS];     // Primitive solution
 
-    virtual double get_Press_funcZVsq(double Z, double Vsq) = 0;
-    virtual double dPdZ_funcZVsq(double Z, double Vsq) = 0;
-    virtual double dPdVsq_funcZVsq(double Z, double Vsq) = 0;
-    virtual void WZ2Prim() = 0;
-    virtual ~con2primFactory() {};
-};
+        /* These must be set for 2DNRNoble scheme */
+        CCTK_INT Failed_2DNRNoble;
+        CCTK_INT Nit_2DNRNoble;
+        CCTK_REAL W_Seed, vsq_Sol, Ssq, Press_Seed, Z_Seed, Z_Sol, vsq_Seed, bsq;
+        CCTK_REAL gcov[10], gcon[10];
+        CCTK_REAL Bsq;
+        CCTK_REAL BiSi;
+        CCTK_HOST CCTK_DEVICE void get_Ssq_Exact();  // From cons (exact)
+        CCTK_HOST CCTK_DEVICE void get_Press_Seed(); // From seed prims and cons
+        CCTK_HOST CCTK_DEVICE void get_Z_Seed();     // From seed prims and cons
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_f0(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_f1(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_Press_funcZVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_dPdZ_funcZVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_dPdVsq_funcZVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_df0dZ(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_df0dVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_df1dZ(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_df1dVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE void WZ2Prim();
+    };
+
+    class idealFluid : public con2primFactory
+    {
+    public:
+        /* Some attributes */
+        CCTK_REAL GammaIdealFluid;
+        /* Constructor */
+        CCTK_HOST CCTK_DEVICE idealFluid(CCTK_REAL gamma, CCTK_REAL (&cons)[NCONS], CCTK_REAL (&prim)[NPRIMS], CCTK_REAL (&gcov)[4][4], CCTK_REAL (&gcon)[4][4]);
+
+        /* Called by 2DNRNoble */
+        CCTK_HOST CCTK_DEVICE void get_Ssq_Exact();
+        CCTK_HOST CCTK_DEVICE void get_Press_Seed();
+        CCTK_HOST CCTK_DEVICE void get_Z_Seed();
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_f0(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_f1(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_Press_funcZVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_dPdZ_funcZVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_dPdVsq_funcZVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_df0dZ(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_df0dVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_df1dZ(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE CCTK_REAL get_2DNRNoble_df1dVsq(CCTK_REAL Z, CCTK_REAL Vsq);
+        CCTK_HOST CCTK_DEVICE void WZ2Prim();
+
+        /* Destructor */
+        CCTK_HOST CCTK_DEVICE ~idealFluid();
+    };
+}
+
+#endif // #ifndef CON2PRIM_HXX
+
+template <typename typeEoS>
+CCTK_HOST CCTK_DEVICE void Con2Prim_2DNRNoble(
+    CCTK_INT max_iter, CCTK_REAL tolf,
+    typeEoS &plasma);
