@@ -1,13 +1,17 @@
 # con2primFactory
 
-## Branch: AsterX
+Suite of conservative to primitive algorithms, agnostic of the plasma model.
 
-In this branch, virtual functions of parent class 
-have been abandoned.
+See AsterX_Flat_idealFluid_Magnetized/ for an instantiation and test example.
 
-Instead, we define `con2prim` algorithms as templates
-for the different instances of the parent class.
-This is crucial for running on GPUs.
+## Current Branch: AsterX
+
+In this branch, guided by GPU compatibility, virtual functions of
+the parent class have been abandoned.
+
+Instead, we define `con2prim` algorithms as 
+templates functions for the different instances of
+the parent class.
 
 Some code design is compromised, as now
 child classes must be defined in `con2primFactory.hxx`,
