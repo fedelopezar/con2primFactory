@@ -55,7 +55,8 @@ namespace AsterX
         /* Some attributes */
         CCTK_REAL GammaIdealFluid;
         /* Constructor */
-        CCTK_HOST CCTK_DEVICE idealFluid(CCTK_REAL gamma, CCTK_REAL (&cons)[NCONS], CCTK_REAL (&prim)[NPRIMS], CCTK_REAL (&gcov)[4][4], CCTK_REAL (&gcon)[4][4]);
+        CCTK_HOST CCTK_DEVICE idealFluid(CCTK_REAL gamma, CCTK_REAL (&cons)[NCONS], CCTK_REAL (&prim)[NPRIMS], CCTK_REAL (&gcov)[4][4], CCTK_REAL (&gcon)[4][4], CCTK_INT forTesting);
+        CCTK_HOST CCTK_DEVICE void get_ConservedVarsFromPrimVector(CCTK_REAL (&prim)[NPRIMS]);
 
         /* Called by 2DNRNoble */
         CCTK_HOST CCTK_DEVICE void get_Ssq_Exact();
