@@ -11,3 +11,6 @@ AsterX_Flat_idealFluid_Magnetized/2DNRNoble.h5
 AsterX_Flat_idealFluid_Magnetized/main.o
 AsterX_Flat_idealFluid_Magnetized/.ipynb_checkpoints/
 AsterX_Flat_idealFluid_Magnetized/testResults.pdf
+idealFluid/.ipynb_checkpoints/
+idealFluid/.vscode/
+.vscode/
