@@ -3,34 +3,34 @@
 namespace AsterX
 {
 
-    constexpr int D = 0;
-    constexpr int S1_COV = 1;
-    constexpr int S2_COV = 2;
-    constexpr int S3_COV = 3;
-    constexpr int TAU = 4;
-    constexpr int B1 = 5;
-    constexpr int B2 = 6;
-    constexpr int B3 = 7;
+    // constexpr int D = 0;
+    // constexpr int S1_COV = 1;
+    // constexpr int S2_COV = 2;
+    // constexpr int S3_COV = 3;
+    // constexpr int TAU = 4;
+    // constexpr int B1 = 5;
+    // constexpr int B2 = 6;
+    // constexpr int B3 = 7;
 
-    constexpr int RHO = 0;
-    constexpr int V1_CON = 1;
-    constexpr int V2_CON = 2;
-    constexpr int V3_CON = 3;
-    constexpr int V1_COV = 1;
-    constexpr int V2_COV = 2;
-    constexpr int V3_COV = 3;
-    constexpr int EPS = 4;
+    // constexpr int RHO = 0;
+    // constexpr int V1_CON = 1;
+    // constexpr int V2_CON = 2;
+    // constexpr int V3_CON = 3;
+    // constexpr int V1_COV = 1;
+    // constexpr int V2_COV = 2;
+    // constexpr int V3_COV = 3;
+    // constexpr int EPS = 4;
 
-    constexpr int TT = 0;
-    constexpr int TX = 1;
-    constexpr int TY = 2;
-    constexpr int TZ = 3;
-    constexpr int XX = 4;
-    constexpr int XY = 5;
-    constexpr int XZ = 6;
-    constexpr int YY = 7;
-    constexpr int YZ = 8;
-    constexpr int ZZ = 9;
+    // constexpr int TT = 0;
+    // constexpr int TX = 1;
+    // constexpr int TY = 2;
+    // constexpr int TZ = 3;
+    // constexpr int XX = 4;
+    // constexpr int XY = 5;
+    // constexpr int XZ = 6;
+    // constexpr int YY = 7;
+    // constexpr int YZ = 8;
+    // constexpr int ZZ = 9;
 
     // class idealFluid : public con2primFactory
     // {
