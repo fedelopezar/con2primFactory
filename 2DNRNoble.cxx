@@ -7,15 +7,12 @@
 Sources: Noble+2006, Section 3.1 of Siegel+2018, 
 NUMERICAL RECIPES IN C: THE ART OF SCIENTIFIC COMPUTING
 ****************************************************************************/
-void Con2Prim_2DNRNoble(int max_iter, con2primFactory &plasma)
+void Con2Prim_2DNRNoble(con2primFactory &plasma)
 { // Send con2primFactory object as reference to modify it, and because we can not instantiate abstract class
 
     /* get Lorentz factor seed */
     plasma.get_LorentzFactor_Seed();
     double W = plasma.W_Seed;
-
-    /* get Ssq from cons (exact) */
-    plasma.get_Ssq_Exact();
 
     /* update rho seed from D and gamma */
     // rho consistent with con[D] should be better guess than rho from last timestep
@@ -48,7 +45,7 @@ void Con2Prim_2DNRNoble(int max_iter, con2primFactory &plasma)
     double errf;
 
     plasma.Failed_2DNRNoble = 1;
-    for (int k = 1; k <= max_iter; k++)
+    for (int k = 1; k <= plasma.max_iterations; k++)
     {
         Press = plasma.get_Press_funcZVsq(x[0], x[1]);
         fvec[0] = plasma.get_2DNRNoble_f0(x[0], x[1]);

@@ -7,7 +7,8 @@ const H5std_string DATASET1_NAME("prims_sol");
 const H5std_string DATASET2_NAME("N_RHO");
 const H5std_string DATASET3_NAME("N_TEMP");
 
-extern void Con2Prim_2DNRNoble(int max_iter, con2primFactory &plasma);
+extern void Con2Prim_2DNRNoble(con2primFactory &plasma);
+extern void Con2Prim_1DBrentPalenzuela(con2primFactory &plasma);
 
 int main(int argn, char **argv)
 {
@@ -17,8 +18,8 @@ int main(int argn, char **argv)
 
     /* Parameters for the test */
     double RHO_CGS2CCTK = 1.6189988336901327e-18;
-    double RHO_MIN = 1.0E6*RHO_CGS2CCTK;
-    double RHO_MAX = 1.0E14*RHO_CGS2CCTK;
+    double RHO_MIN = 1.0E6 * RHO_CGS2CCTK;
+    double RHO_MAX = 1.0E14 * RHO_CGS2CCTK;
     int N_RHO = 10;
     double RHO_EXP_STEP = (log10(RHO_MAX) - log10(RHO_MIN)) / N_RHO;
     double RHO_EXP = log10(RHO_MIN);
@@ -40,7 +41,7 @@ int main(int argn, char **argv)
     double B;
     for (int i = 1; i <= N_RHO; i++)
     {
-        //rho = pow(10.0, RHO_EXP) * RHO_CGS2CCTK;
+        // rho = pow(10.0, RHO_EXP) * RHO_CGS2CCTK;
         rho = pow(10.0, RHO_EXP);
         RHO_EXP += RHO_EXP_STEP;
 
@@ -51,9 +52,9 @@ int main(int argn, char **argv)
             TEMP_EXP += TEMP_EXP_STEP;
 
             eps = temp / (4.0 / 3.0 - 1.0);
-            prims_0[0] = rho;
-            prims_0[4] = eps;
-            prims_0[7] = sqrt(eps * rho)/10;
+            prims_0[0] = rho*0.9;
+            prims_0[4] = eps*0.9;
+            prims_0[7] = sqrt(eps * rho) / 10;
             prims_or[count][0] = rho;
             prims_or[count][1] = prims_0[1];
             prims_or[count][2] = prims_0[2];
@@ -64,7 +65,15 @@ int main(int argn, char **argv)
             prims_or[count][7] = prims_0[7];
 
             AsterX_Flat_idealFluid_Magnetized plasma_0(conserved_0, prims_0);
-            Con2Prim_2DNRNoble(100000, plasma_0);
+            Con2Prim_2DNRNoble(plasma_0);
+            Con2Prim_1DBrentPalenzuela(plasma_0);
+
+            std::cout << "0: " << plasma_0.PrimitiveVars[0] << " " << prims_or[count][0] << "\n";
+            std::cout << "1: " << plasma_0.PrimitiveVars[1] << " " << prims_or[count][1] << "\n";
+            std::cout << "2: " << plasma_0.PrimitiveVars[2] << " " << prims_or[count][2] << "\n";
+            std::cout << "3: " << plasma_0.PrimitiveVars[3] << " " << prims_or[count][3] << "\n";
+            std::cout << "4: " << plasma_0.PrimitiveVars[4] << " " << prims_or[count][4] << "\n";
+
             prims_sol[count][0] = plasma_0.PrimitiveVars[0];
             prims_sol[count][1] = plasma_0.PrimitiveVars[1];
             prims_sol[count][2] = plasma_0.PrimitiveVars[2];
@@ -97,7 +106,6 @@ int main(int argn, char **argv)
             dims_scalar[0] = 1;
             int dataset_scalar[1];
             const int RANK = 2;
-            std::cout << N_TEMP << std::endl;
             H5::DataSpace dataspace0(RANK, dims); // TODO: Create group
             H5::DataSpace dataspace1(RANK, dims);
             H5::DataSpace dataspace2(1, dims_scalar);

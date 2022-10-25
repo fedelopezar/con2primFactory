@@ -9,7 +9,7 @@ CXXFLAGS=-std=c++11 $(INC) -L$(LDIR) $(LIBS)
 
 DEPS = AsterX_Flat_idealFluid_Magnetized.hxx  ../con2primFactory.hxx 
 
-OBJ = ../2DNRNoble.o  AsterX_Flat_idealFluid_Magnetized.o main.o
+OBJ = ../2DNRNoble.o  ../1DBrentPalenzuela.o AsterX_Flat_idealFluid_Magnetized.o main.o
 
 %.o: %.cxx $(DEPS)
 	$(CXX) -c -o $@ $< $(CXXFLAGS)
