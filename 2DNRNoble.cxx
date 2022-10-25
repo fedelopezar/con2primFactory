@@ -1,4 +1,4 @@
-#include "con2primFactory.hxx"
+#include "con2primIdealFluid.hxx"
 
 /***************************************************************************
 2DNRNoble C2P
@@ -15,10 +15,7 @@ CCTK_HOST CCTK_DEVICE void Con2Prim_2DNRNoble(
   // and because we can not instantiate abstract class
 
     /* get Lorentz factor seed, calculated by constructor */
-    CCTK_REAL W = plasma.W_Seed;
-
-    /* get Ssq from cons (exact) */
-    plasma.get_Ssq_Exact();
+    CCTK_REAL W = plasma.WLorentz_Seed;
 
     /* get pressure seed */
     plasma.get_Press_Seed();

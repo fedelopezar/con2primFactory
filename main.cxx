@@ -1,4 +1,4 @@
-#include "idealFluid.hxx"
+#include "con2primIdealFluid.hxx"
 
 #define CCTK_ARGUMENTS
 #define CCTK_PASS_CTOC
